@@ -1,0 +1,299 @@
+/*
+ * Francesco Sorge (http://www.francescosorge.com)
+ * Copyright 2018-* Francesco Sorge
+ * Licensed under Apache (http://www.apache.org/licenses/LICENSE-2.0)
+ */
+//@import url("bootstrap.min.css");
+/* Base definitions */
+@import "generic";
+
+html, body {
+  background-color: #eeeeee;
+}
+
+/* Specific definitions */
+a {
+  color: #1e90ff;
+  text-decoration: underline;
+  @include transition(null, .2s, ease-in-out, null);
+
+  &:hover, &:focus {
+    color: #1e6ad3;
+  }
+}
+
+a, a:visited {
+  &.button:hover {
+    text-decoration: none;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+*[contenteditable="true"] {
+  outline: none;
+}
+
+.content {
+  margin: 0 auto;
+  width: calc(100% - 40px);
+  max-width: 800px;
+  padding: 20px;
+  background-color: #FFFFFF;
+  //border: 1px solid lightgray;
+}
+
+.center-page {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  padding: 30px;
+
+  @media (max-width: $media-breakpoint-md) {
+    position: static;
+    left: auto;
+    top: auto;
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+
+input, select, textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  display: inline-block;
+  padding: 10px 15px;
+  margin: 5px;
+  border: 1px solid #d9d9d9;
+  border-radius: 10px;
+  font-size: 11pt;
+  background-color: white;
+  @include transition(null, .2s, ease-in-out, null);
+
+  &:hover, &:focus {
+    outline: none;
+    border: 1px solid #2f83ff;
+    @include box-shadow(null, 0px, 5px, 37px, -8px, rgba(30, 107, 201, 1));
+  }
+
+  &:focus {
+    border: 1px solid #2e6bd6;
+  }
+}
+
+input[type=submit], .button, button {
+  display: inline-block;
+  margin: 5px;
+  background-image: linear-gradient(to right, #1e6bc9, #237eec);
+  border: none;
+  color: #FFFFFF;
+  padding: 10px 20px;
+  cursor: pointer;
+  text-decoration: none;
+  border-radius: 10px;
+  font-size: 11pt;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-align: center;
+  @include transition(null, .2s, ease-in-out, null);
+
+  &.not-primary {
+    background-color: #FFFFFF;
+    border: none;
+    color: #2f83ff;
+  }
+
+  &:hover, &:focus {
+    background-color: #2e6bd6;
+    border: none;
+    color: white;
+    outline: none;
+    @include box-shadow(null, 0px, 5px, 37px, -8px, rgba(30, 107, 201, 1));
+  }
+
+  &.not-primary:hover, &.not-primary:focus {
+    background-color: #2e6bd6;
+    color: #FFFFFF;
+  }
+
+  &:disabled {
+    background-color: #a9d1ff;
+  }
+
+  &.small {
+    padding: 5px 10px;
+  }
+
+  &.red {
+    background-color: red;
+    border: none;
+
+    &:hover, &:focus {
+      background-color: #d20000;
+      border: none;
+    }
+  }
+
+  &.green {
+    background-color: green;
+    border: none;
+
+    &:hover, &:focus {
+      background-color: #007900;
+      border: none;
+    }
+  }
+}
+
+label {
+  font-weight: normal;
+  margin: 0;
+}
+
+input[type='checkbox'] {
+  width: auto;
+  float: left;
+  display: block;
+}
+
+.list {
+  padding: 10px 10px;
+  text-decoration: none;
+  margin: 5px 0px;
+  cursor: pointer;
+  color: black;
+  @include transition(null, .1s, ease-in-out, null);
+  @include border-radius(10px, 10px, 10px, 10px);
+
+  &:hover, &:focus, &.selected {
+    background-image: linear-gradient(to right, #1e6bc9, #237eec);
+    color: #FFFFFF !important;
+    text-decoration: none;
+    @include box-shadow(null, 0px, 0px, 37px, -8px, rgba(30, 107, 201, 1));
+  }
+
+  &.no-transition {
+    @include transition(null, none, null, null);
+  }
+}
+
+.profile_picture {
+  width: 64px;
+  float: left;
+  margin: 10px;
+  margin-right: 20px;
+  border-radius: 50%;
+  @include box-shadow(null, 0px, 0px, 37px, -8px, rgba(30, 107, 201, 1));
+}
+
+.nav-tabs {
+  & a {
+    text-decoration: none;
+    margin-right: 10px;
+  }
+
+  & a:focus {
+    background-image: linear-gradient(to right, #1e6bc9, #237eec);
+    color: #FFFFFF !important;
+    border: 1px solid #007bff;
+
+    &.active {
+      background-color: #007bff;
+      color: #000000 !important;
+      border: 1px solid #007bff;
+
+      &:focus {
+        color: #FFFFFF !important;
+      }
+    }
+  }
+}
+
+.tab-content > .tab-pane {
+  border: 1px solid #dee2e6;
+  border-top: 0px;
+  padding: 20px;
+  @include border-radius(0, 0, .25rem, .25rem);
+}
+
+.display-none {
+  display: none;
+}
+
+label {
+  font-weight: bold;
+  display: inline-block;
+}
+
+.list-inline {
+  display: inline-block;
+  width: 100%;
+  max-width: 200px;
+}
+
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media print {
+  .no-print, .no-print * {
+    display: none !important;
+  }
+}
+
+// iOS cheese graters
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  select,
+  textarea,
+  input {
+    font-size: 16px;
+  }
+}
+
+// responsive
+.mobile, .mobile-block, .mobile-br, .mobile-md, .mobile-block-md, .mobile-br-md {
+  display: none !important;
+}
+
+.pc {
+  display: inline-block !important;
+}
+
+@media (max-width: $media-breakpoint-sm) {
+  .pc {
+    display: none !important;
+
+    &.float-right {
+      display: none !important;
+    }
+  }
+  .mobile {
+    display: inline-block !important;
+  }
+  .mobile-block, .mobile-br {
+    display: block !important;
+  }
+}
+
+@media (max-width: $media-breakpoint-md) {
+  .pc-md {
+    display: none !important;
+
+    &.float-right {
+      display: none !important;
+    }
+  }
+  .mobile-md {
+    display: inline-block !important;
+  }
+  .mobile-block-md, .mobile-br-md {
+    display: block !important;
+  }
+}

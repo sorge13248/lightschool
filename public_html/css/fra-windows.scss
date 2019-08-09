@@ -1,0 +1,66 @@
+@import "_mixin";
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(30, 106, 211, 0.8);
+}
+
+.fra-windows {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 0;
+  margin: 0;
+  display: none;
+  z-index: 10001;
+  background-color: white;
+  border: 1px solid rgb(30, 95, 189);
+
+  .titlebar {
+    background-color: #1E6AD3;
+    color: white;
+
+    & > * {
+      display: inline-block;
+
+      & > .control {
+        display: inline-block;
+        padding: 10px;
+        text-align: center;
+        width: 40px;
+        cursor: pointer;
+        @include transition(null, .2s, ease-in-out, null);
+
+        &:hover, &:focus {
+          background-color: #1d50a0;
+        }
+
+        &.red:hover, &.red:focus {
+          background-color: #ff1d04;
+        }
+      }
+    }
+
+    & > .left-control {
+      text-align: left;
+    }
+
+    & > .center-control {
+      width: 100%;
+      text-align: center;
+    }
+
+    & > .right-control {
+      text-align: right;
+    }
+  }
+
+  .fra-windows-content {
+    background-color: white;
+    overflow-y: auto;
+  }
+}

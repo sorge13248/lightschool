@@ -1,0 +1,72 @@
+.fra-collection-menu {
+    background: -moz-linear-gradient(left, rgba(0, 96, 193, 0.9) 0%, rgba(0, 96, 193, 0.9) 1%, rgba(30, 106, 211, 0.9) 100%);
+    background: -webkit-linear-gradient(left, rgba(0, 96, 193, 0.9) 0%, rgba(0, 96, 193, 0.9) 1%, rgba(30, 106, 211, 0.9) 100%);
+    background: linear-gradient(to right, rgba(0, 96, 193, 0.9) 0%, rgba(0, 96, 193, 0.9) 1%, rgba(30, 106, 211, 0.9) 100%);
+}
+
+.fra-collection-menu a:hover, .fra-collection-menu a:focus {
+    background: -moz-linear-gradient(left, rgba(30, 106, 211, 0.8) 0%, rgba(30, 106, 211, 0.8) 1%, rgba(0, 96, 193, 0.8) 99%, rgba(0, 96, 193, 0.8) 100%);
+    background: -webkit-linear-gradient(left, rgba(30, 106, 211, 0.8) 0%, rgba(30, 106, 211, 0.8) 1%, rgba(0, 96, 193, 0.8) 99%, rgba(0, 96, 193, 0.8) 100%);
+    background: linear-gradient(to right, rgba(30, 106, 211, 0.8) 0%, rgba(30, 106, 211, 0.8) 1%, rgba(0, 96, 193, 0.8) 99%, rgba(0, 96, 193, 0.8) 100%);
+}
+
+.fra-collection-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0 10px;
+    z-index: 1000;
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently
+                supported by Chrome and Opera */
+    -webkit-box-shadow: 0px 5px 37px -8px #1e6bc9;
+    -moz-box-shadow: 0px 5px 37px -8px #1e6bc9;
+    box-shadow: 0px 5px 37px -8px #1e6bc9;
+}
+
+.fra-collection-menu a {
+    color: white;
+    text-decoration: none;
+    padding: 15px 20px;
+    margin-right: 5px;
+}
+
+.fra-collection-menu a .menu-mobile-text {
+    display: none;
+}
+
+.fra-collection-menu a:hover, .fra-collection-menu a:focus {
+    color: white;
+    text-decoration: none;
+}
+
+.fra-collection-menu-mobile {
+    display: none;
+    width: 100%;
+    height: 100vh;
+    overflow-y: scroll;
+}
+
+.fra-collection-menu-mobile a {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    text-align: left;
+}
+
+.fra-collection-menu-mobile a .menu-mobile-text {
+    display: inline-block;
+}
+
+/*# sourceMappingURL=menu.css.map */

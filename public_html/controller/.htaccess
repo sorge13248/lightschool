@@ -1,0 +1,13 @@
+#deny from all
+RewriteEngine On
+
+RewriteOptions inherit
+Options +FollowSymLinks -MultiViews -Indexes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+ErrorDocument 404 /404.php
+
+DirectoryIndex index.php
+
+RewriteRule ^provide-file/([0-9]+) provide-file.php?id=$1

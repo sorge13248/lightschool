@@ -1,0 +1,47 @@
+$font-family: "Arial", "Tahoma", sans-serif;
+$font-size: 12pt;
+
+// base variables
+$media-breakpoint-sm: 576px;
+$media-breakpoint-md: 768px;
+$media-breakpoint-lg: 992px;
+$media-breakpoint-xl: 1200px;
+
+@mixin font() {
+  font-family: $font-family;
+  font-size: $font-size;
+}
+
+@mixin box-shadow($outline-inset, $horizontal-length, $vertical-length, $blur-radius, $spread-radius, $color) {
+  -webkit-box-shadow: $outline-inset $horizontal-length $vertical-length $blur-radius $spread-radius $color;
+  -moz-box-shadow: $outline-inset $horizontal-length $vertical-length $blur-radius $spread-radius $color;
+  box-shadow: $outline-inset $horizontal-length $vertical-length $blur-radius $spread-radius $color;
+}
+
+@mixin transition($property, $duration, $timing-function, $delay) {
+  -webkit-transition: $property $duration $timing-function $delay;
+  -moz-transition: $property $duration $timing-function $delay;
+  -o-transition: $property $duration $timing-function $delay;
+  transition: $property $duration $timing-function $delay;
+}
+
+@mixin border-radius($top-left, $top-right, $bottom-right, $bottom-left) {
+  -webkit-border-radius: $top-left $top-right $bottom-right $bottom-left;
+  -moz-border-radius: $top-left $top-right $bottom-right $bottom-left;
+  border-radius: $top-left $top-right $bottom-right $bottom-left;
+}
+
+@mixin user-select($type) {
+  -webkit-touch-callout: $type; /* iOS Safari */
+  -webkit-user-select: $type; /* Safari */
+  -khtml-user-select: $type; /* Konqueror HTML */
+  -moz-user-select: $type; /* Firefox */
+  -ms-user-select: $type; /* Internet Explorer/Edge */
+  user-select: $type;
+  /* Non-prefixed version, currently
+                                   supported by Chrome and Opera */
+}
+
+@mixin text-shadow($right, $down, $blur, $color) {
+  text-shadow: $right $down $blur $color;
+}

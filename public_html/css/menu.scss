@@ -1,0 +1,60 @@
+@import "mixin";
+
+%background {
+  background: -moz-linear-gradient(left, rgba(0, 96, 193, 0.9) 0%, rgba(0, 96, 193, 0.9) 1%, rgba(30, 106, 211, 0.9) 100%);
+  background: -webkit-linear-gradient(left, rgba(0, 96, 193, 0.9) 0%, rgba(0, 96, 193, 0.9) 1%, rgba(30, 106, 211, 0.9) 100%);
+  background: linear-gradient(to right, rgba(0, 96, 193, 0.9) 0%, rgba(0, 96, 193, 0.9) 1%, rgba(30, 106, 211, 0.9) 100%);
+}
+
+%background-element {
+  background: -moz-linear-gradient(left, rgba(30, 106, 211, 0.8) 0%, rgba(30, 106, 211, 0.8) 1%, rgba(0, 96, 193, 0.8) 99%, rgba(0, 96, 193, 0.8) 100%);
+  background: -webkit-linear-gradient(left, rgba(30, 106, 211, 0.8) 0%, rgba(30, 106, 211, 0.8) 1%, rgba(0, 96, 193, 0.8) 99%, rgba(0, 96, 193, 0.8) 100%);
+  background: linear-gradient(to right, rgba(30, 106, 211, 0.8) 0%, rgba(30, 106, 211, 0.8) 1%, rgba(0, 96, 193, 0.8) 99%, rgba(0, 96, 193, 0.8) 100%);
+}
+
+.fra-collection-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 0 10px;
+  z-index: 1000;
+  @include user-select(none);
+  @include box-shadow(null, 0px, 5px, 37px, -8px, rgba(30, 107, 201, 1));
+  @extend %background;
+
+  & a {
+    color: white;
+    text-decoration: none;
+    padding: 15px 20px;
+    margin-right: 5px;
+
+    & .menu-mobile-text {
+      display: none;
+    }
+
+    &:hover, &:focus {
+      @extend %background-element;
+      color: white;
+      text-decoration: none;
+    }
+  }
+}
+
+.fra-collection-menu-mobile {
+  display: none;
+  width: 100%;
+  height: 100vh;
+  overflow-y: scroll;
+
+  & a {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    text-align: left;
+
+    & .menu-mobile-text {
+      display: inline-block;
+    }
+  }
+}

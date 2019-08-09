@@ -1,0 +1,7 @@
+﻿public_html/.idea
+public_html/composer.lock
+public_html/vendor
+public_html/js/pdf.js
+*.map
+public_html/js/tinymce
+public_html/css/.sass-cache

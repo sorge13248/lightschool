@@ -1,0 +1,42 @@
+@import "mixin";
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  color: black;
+  @include font();
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6, p, label {
+  padding: 5px 2px;
+  margin: 5px 2px;
+}
+
+label {
+  display: inline-block;
+}
+
+input, select {
+
+}
+
+a.btn {
+  text-decoration: none;
+
+  &:focus {
+    color: white;
+  }
+}
+
+.custom-control-label {
+  margin: 0;
+  padding: 0;
+}
+
+.ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}

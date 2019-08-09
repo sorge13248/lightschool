@@ -1,0 +1,2 @@
+<title><?php echo($this->getVariables("pageTitle")); ?> - <?php echo(CONFIG_SITE["title"]); ?></title>
+<link rel="stylesheet" href="<?php echo(CONFIG_SITE["baseURL"] . "/css/lightschool-my.css"); ?>"/>

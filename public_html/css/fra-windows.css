@@ -1,0 +1,49 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(30, 106, 211, 0.8); }
+
+.fra-windows {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 0;
+  margin: 0;
+  display: none;
+  z-index: 10001;
+  background-color: white;
+  border: 1px solid #1e5fbd; }
+  .fra-windows .titlebar {
+    background-color: #1E6AD3;
+    color: white; }
+    .fra-windows .titlebar > * {
+      display: inline-block; }
+      .fra-windows .titlebar > * > .control {
+        display: inline-block;
+        padding: 10px;
+        text-align: center;
+        width: 40px;
+        cursor: pointer;
+        -webkit-transition: 0.2s ease-in-out;
+        -moz-transition: 0.2s ease-in-out;
+        -o-transition: 0.2s ease-in-out;
+        transition: 0.2s ease-in-out; }
+        .fra-windows .titlebar > * > .control:hover, .fra-windows .titlebar > * > .control:focus {
+          background-color: #1d50a0; }
+        .fra-windows .titlebar > * > .control.red:hover, .fra-windows .titlebar > * > .control.red:focus {
+          background-color: #ff1d04; }
+    .fra-windows .titlebar > .left-control {
+      text-align: left; }
+    .fra-windows .titlebar > .center-control {
+      width: 100%;
+      text-align: center; }
+    .fra-windows .titlebar > .right-control {
+      text-align: right; }
+  .fra-windows .fra-windows-content {
+    background-color: white;
+    overflow-y: auto; }
+
+/*# sourceMappingURL=fra-windows.css.map */

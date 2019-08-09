@@ -1,0 +1,13 @@
+RewriteEngine On
+
+RewriteOptions inherit
+Options +FollowSymLinks -MultiViews -Indexes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+ErrorDocument 404 /404.php
+
+DirectoryIndex index.php
+
+RewriteRule ^d/(.+)/ detail.php?name=$1
+RewriteRule ^c/(.+)/ category.php?name=$1
