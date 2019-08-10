@@ -2,13 +2,22 @@
 $database = new \FrancescoSorge\PHP\Database(new \PDO(CONFIG_DATABASE['driver'] . ":host=" . CONFIG_DATABASE['host'] . ";dbname=" . CONFIG_DATABASE['dbname'] . ";charset=" . CONFIG_DATABASE['charset'], CONFIG_DATABASE["user"], CONFIG_DATABASE["password"]));
 
 if ($_GET["id"] !== null) {
-    require_once __DIR__ . "/../file-manager/model.php";
+    $owner = null;
 
-    if ($_GET["type"] === "contact" || (new \FrancescoSorge\PHP\LightSchool\FileManager())->checkOwnership((int)$_GET["id"])) {
-        $owner = $this->getVariables("currentUser")->id;
-    } else {
-        require_once __DIR__ . "/../share/model.php";
-        $owner = (new \FrancescoSorge\PHP\LightSchool\Share())->authorized((int)$_GET["id"]);
+    require_once __DIR__ . "/../file-manager/model.php";
+    require_once __DIR__ . "/../whiteboard/model.php";
+
+    if (\FrancescoSorge\PHP\LightSchool\WhiteBoard::isFileProjecting((int)$_GET["id"], \FrancescoSorge\PHP\Cookie::get("whiteboard_code"))) {
+        $owner = \FrancescoSorge\PHP\LightSchool\FileManager::getOwner((int)$_GET["id"]);
+    }
+
+    if ($owner === null) {
+        if ($_GET["type"] === "contact" || (new \FrancescoSorge\PHP\LightSchool\FileManager())->checkOwnership((int)$_GET["id"])) {
+            $owner = $this->getVariables("currentUser")->id;
+        } else {
+            require_once __DIR__ . "/../share/model.php";
+            $owner = (new \FrancescoSorge\PHP\LightSchool\Share())->authorized((int)$_GET["id"]);
+        }
     }
 
     if ($_GET["type"] === "notebook") {

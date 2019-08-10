@@ -3,6 +3,7 @@
 namespace FrancescoSorge\PHP\LightSchool {
 
     use FrancescoSorge\PHP\Basic;
+    use FrancescoSorge\PHP\Cookie;
     use FrancescoSorge\PHP\Database;
 
     final class FileManager {
@@ -60,13 +61,30 @@ namespace FrancescoSorge\PHP\LightSchool {
             }
         }
 
+        public static function getOwner($id) {
+            if (!is_int($id)) { // id not valid
+                return ["response" => "error", "text" => "invalid_id"];
+            }
+
+            $database = new Database(new \PDO(CONFIG_DATABASE['driver'] . ":host=" . CONFIG_DATABASE['host'] . ";dbname=" . CONFIG_DATABASE['dbname'] . ";charset=" . CONFIG_DATABASE['charset'], CONFIG_DATABASE["user"], CONFIG_DATABASE["password"]));
+
+            $owner = $database->query("SELECT user_id FROM file WHERE id = :id AND deleted is NULL LIMIT 1", [
+                [
+                    "name" => "id",
+                    "value" => $id,
+                    "type" => \PDO::PARAM_INT,
+                ],
+            ], "fetchAll");
+
+            return isset($owner[0]) ? $owner[0]["user_id"] : null;
+        }
+
         public static function checkOwnership ($id, $userid = null) {
             if (!is_int($id)) { // id not valid
                 return ["response" => "error", "text" => "invalid_id"];
             }
 
             global $fraUserManagement;
-
 
             $database = new Database(new \PDO(CONFIG_DATABASE['driver'] . ":host=" . CONFIG_DATABASE['host'] . ";dbname=" . CONFIG_DATABASE['dbname'] . ";charset=" . CONFIG_DATABASE['charset'], CONFIG_DATABASE["user"], CONFIG_DATABASE["password"]));
 
@@ -130,8 +148,6 @@ namespace FrancescoSorge\PHP\LightSchool {
             }
 
             global $fraUserManagement;
-
-
             $database = new Database(new \PDO(CONFIG_DATABASE['driver'] . ":host=" . CONFIG_DATABASE['host'] . ";dbname=" . CONFIG_DATABASE['dbname'] . ";charset=" . CONFIG_DATABASE['charset'], CONFIG_DATABASE["user"], CONFIG_DATABASE["password"]));
 
             $userid = isset($userid) ? $userid : $fraUserManagement->getCurrentUserInfo(["id"], ["users"])->id;
@@ -164,7 +180,7 @@ namespace FrancescoSorge\PHP\LightSchool {
                 return ["response" => "error", "text" => "already", "file_name" => $file_name];
             }
 
-            $path = __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "user" . DIRECTORY_SEPARATOR . md5($userid) . DIRECTORY_SEPARATOR . date("Y-m-d");
+            $path = CONFIG_SITE["uploadDIR"] . DIRECTORY_SEPARATOR . md5($userid) . DIRECTORY_SEPARATOR . date("Y-m-d");
             if (!file_exists($path)) {
                 mkdir($path, 066, true);
             }
@@ -183,43 +199,45 @@ namespace FrancescoSorge\PHP\LightSchool {
                 return ["response" => "error", "text" => "max_or_ext", "file_name" => $file_name];
             } else {
                 $completePath = $path . DIRECTORY_SEPARATOR . $file_name;
-                move_uploaded_file($file_path, $completePath);
+                if (move_uploaded_file($file_path, $completePath)) {
+                    $database->query("INSERT INTO file(user_id, type, name, file_url, file_type, file_size, folder) VALUES (:user_id, 'file', :name, :url, :type, :size, :folder)", [
+                    [
+                        "name" => "user_id",
+                        "value" => $userid,
+                        "type" => \PDO::PARAM_INT,
+                    ],
+                    [
+                        "name" => "name",
+                        "value" => $file_name,
+                        "type" => \PDO::PARAM_STR,
+                    ],
+                    [
+                        "name" => "url",
+                        "value" => md5($userid) . DIRECTORY_SEPARATOR . date("Y-m-d") . DIRECTORY_SEPARATOR . $file_name,
+                        "type" => \PDO::PARAM_STR,
+                    ],
+                    [
+                        "name" => "type",
+                        "value" => $file_type,
+                        "type" => \PDO::PARAM_STR,
+                    ],
+                    [
+                        "name" => "size",
+                        "value" => $file_size,
+                        "type" => \PDO::PARAM_INT,
+                    ],
+                    [
+                        "name" => "folder",
+                        "value" => $folder,
+                        "type" => \PDO::PARAM_INT,
+                    ],
+                ], "fetchAll");
+
+                    return ["response" => "success", "text" => "ok"];
+                } else {
+                    return ["response" => "error", "text" => "move_uploaded_file"];
+                }
             }
-
-            $database->query("INSERT INTO file(user_id, type, name, file_url, file_type, file_size, folder) VALUES (:user_id, 'file', :name, :url, :type, :size, :folder)", [
-                [
-                    "name" => "user_id",
-                    "value" => $userid,
-                    "type" => \PDO::PARAM_INT,
-                ],
-                [
-                    "name" => "name",
-                    "value" => $file_name,
-                    "type" => \PDO::PARAM_STR,
-                ],
-                [
-                    "name" => "url",
-                    "value" => md5($userid) . DIRECTORY_SEPARATOR . date("Y-m-d") . DIRECTORY_SEPARATOR . $file_name,
-                    "type" => \PDO::PARAM_STR,
-                ],
-                [
-                    "name" => "type",
-                    "value" => $file_type,
-                    "type" => \PDO::PARAM_STR,
-                ],
-                [
-                    "name" => "size",
-                    "value" => $file_size,
-                    "type" => \PDO::PARAM_INT,
-                ],
-                [
-                    "name" => "folder",
-                    "value" => $folder,
-                    "type" => \PDO::PARAM_INT,
-                ],
-            ], "fetchAll");
-
-            return ["response" => "success", "text" => "ok"];
         }
 
         public function listFolder ($id = null, $userid = null, $limit = null) {
@@ -589,13 +607,7 @@ namespace FrancescoSorge\PHP\LightSchool {
 
             $userid = isset($userid) ? $userid : $this->userManagement->getCurrentUserInfo(["id"], ["users"])->id;
 
-            if ($type === "delete_completely") {
-                $query = "UPDATE file SET deleted = NOW() WHERE user_id = :user_id AND id = :id AND deleted IS NULL LIMIT 1";
-            } else {
-                $query = "UPDATE file SET trash = 1 WHERE user_id = :user_id AND id = :id AND deleted IS NULL LIMIT 1";
-            }
-
-            $this->database->query($query, [
+            $file = $this->database->query("SELECT id, type, file_url FROM file WHERE id = :id AND user_id = :user_id LIMIT 1", [
                 [
                     "name" => "user_id",
                     "value" => $userid,
@@ -608,9 +620,14 @@ namespace FrancescoSorge\PHP\LightSchool {
                 ],
             ], "fetchAll");
 
-            if ($type === "delete_completely") {
-                $query = "SELECT file_url FROM file WHERE user_id = :user_id AND id = :id AND deleted IS NOT NULL LIMIT 1";
-                $result = $this->database->query($query, [
+            if (isset($file[0])) {
+                if ($type === "delete_completely") {
+                    $query = "UPDATE file SET deleted = NOW() WHERE user_id = :user_id AND id = :id AND deleted IS NULL LIMIT 1";
+                } else {
+                    $query = "UPDATE file SET trash = 1 WHERE user_id = :user_id AND id = :id AND deleted IS NULL LIMIT 1";
+                }
+
+                $this->database->query($query, [
                     [
                         "name" => "user_id",
                         "value" => $userid,
@@ -622,13 +639,35 @@ namespace FrancescoSorge\PHP\LightSchool {
                         "type" => \PDO::PARAM_INT,
                     ],
                 ], "fetchAll");
-                if (isset($result[0]["file_url"]) && $result[0]["file_url"] !== null) {
-                    $path = __DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "user" . DIRECTORY_SEPARATOR;
-                    unlink($path . $result[0]["file_url"]);
-                }
-            }
 
-            return ["response" => "success", "text" => $type];
+                if ($type === "delete_completely" && $file[0]["type"] === "file" && $file[0]["file_url"]) {
+                    $path = CONFIG_SITE["uploadDIR"] . DIRECTORY_SEPARATOR;
+                    unlink($path . $file[0]["file_url"]);
+                }
+
+                if ($type === "delete_completely") {
+                    $files = $this->database->query("SELECT id, type FROM file WHERE folder = :id AND user_id = :user_id", [
+                        [
+                            "name" => "user_id",
+                            "value" => $userid,
+                            "type" => \PDO::PARAM_INT,
+                        ],
+                        [
+                            "name" => "id",
+                            "value" => $id,
+                            "type" => \PDO::PARAM_INT,
+                        ],
+                    ], "fetchAll");
+
+                    foreach($files as &$item) {
+                        $this->delete((int)$item["id"], $type, $userid);
+                    }
+                }
+
+                return ["response" => "success", "text" => $type];
+            } else {
+                return ["response" => "error", "text" => "invalid_id"];
+            }
         }
 
         public function fav ($id, $userid = null) {
@@ -766,7 +805,7 @@ namespace FrancescoSorge\PHP\LightSchool {
             return ["response" => "success", "text" => "emptied"];
         }
 
-        public function getDetails ($id, $fields = null, $userid = null) {
+        public function getDetails ($id, $fields = null, $userid = null, $force = null) {
             if (!is_int($id)) { // id not valid
                 return ["response" => "error", "text" => "invalid_id"];
             }
@@ -775,7 +814,15 @@ namespace FrancescoSorge\PHP\LightSchool {
                 $fields = ["type", "name", "icon", "file_url", "file_type"];
             }
 
-            $userid = isset($userid) ? $userid : $this->userManagement->getCurrentUserInfo(["id"], ["users"])->id;
+            if ($force === null) $force = false;
+
+            if (\FrancescoSorge\PHP\LightSchool\WhiteBoard::isFileProjecting($id, Cookie::get("whiteboard_code"))) {
+                $userid = \FrancescoSorge\PHP\LightSchool\FileManager::getOwner($id);
+            } else if ($this->userManagement->isLogged()) {
+                $userid = isset($userid) ? $userid : $this->userManagement->getCurrentUserInfo(["id"], ["users"])->id;
+            } else {
+                return ["response" => "error", "text" => "not_authorized"];
+            }
 
             if (!FileManager::checkOwnership($id, $userid) && !Share::authorized($id, $userid)) {
                 return ["response" => "error", "text" => "not_authorized"];
@@ -803,8 +850,10 @@ namespace FrancescoSorge\PHP\LightSchool {
                 if (in_array("icon", $fields)) {
                     $file["icon"] = self::getIcon($id, $file["name"], $file["icon"], $file["type"], isset($file["file_url"]) ? $file["file_url"] : null, isset($file["file_type"]) ? $file["file_type"] : null);
                 }
-                unset($file["user_id"]);
-                unset($file["file_url"]);
+                if (!$force) {
+                    unset($file["user_id"]);
+                    unset($file["file_url"]);
+                }
 
                 if (isset($file["create_date"])) {
                     $file["create_date"] = Basic::timestampToHuman($file["create_date"]);

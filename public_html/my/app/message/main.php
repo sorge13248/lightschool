@@ -182,7 +182,6 @@
         const self = $(this);
 
         ajax.execute(function (result) {
-            console.log(result);
             const notification = new FraNotifications(FraBasic.generateGUID(), result["text"]);
             notification.setAutoClose(2000);
 

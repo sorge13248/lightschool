@@ -1,1 +1,0 @@
-const ConfigSite = {"name": "LightSchool", "baseURL": ""};

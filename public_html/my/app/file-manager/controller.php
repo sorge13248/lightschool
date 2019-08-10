@@ -1,13 +1,13 @@
 <?php
 require_once __DIR__ . "/../../../etc/core.php";
 
-if ($fraUserManagement->isLogged()) {
+$type = isset($_GET["type"]) ? $_GET["type"] : null;
+if ($fraUserManagement->isLogged() || ($_GET["type"] === "details")) {
     header('Content-type:application/json;charset=utf-8');
 
     require_once __DIR__ . "/../file-manager/model.php";
     require_once CONTROLLER . "/notebook.php";
 
-    $type = isset($_GET["type"]) ? $_GET["type"] : null;
     $response = [];
 
     if ($type === "create-folder") {
@@ -34,6 +34,8 @@ if ($fraUserManagement->isLogged()) {
                 break;
         }
     } else if ($type === "details") {
+        require_once __DIR__ . "/../whiteboard/model.php";
+
         if (isset($_GET['id'])) {
             if (isset($_GET["fields"])) {
                 $fields = explode(",", $_GET["fields"]);
@@ -177,6 +179,9 @@ if ($fraUserManagement->isLogged()) {
                 break;
             case "max_or_ext":
                 $response["text"] = $response["file_name"] . ": questo file supera la dimensione massima oppure l'estensione non &egrave; accettata";
+                break;
+            case "move_uploaded_file":
+                $response["text"] = $response["file_name"] . ": impossibile caricare questo file. &Egrave; successo qualcosa, contatta il supporto tecnico.";
                 break;
         }
     } else {

@@ -9,4 +9,4 @@ ErrorDocument 404 /404.php
 
 DirectoryIndex index.php
 
-RewriteRule ^([a-zA-Z]+)/([0-9]+) index.php?type=$1&id=$2
+RewriteRule ^([a-zA-Z]+)/([0-9]+) index.php?type=$1&id=$2 [NC,L]

@@ -29,7 +29,8 @@ namespace FrancescoSorge\PHP {
          * @return array when using a SELECT, to be used like $errorReporting->name;
          * @example query('SELECT name FROM user WHERE id = :id', [["name" => "id", "value" => 1, "type" => \PDO::PARAM_INT]])
          */
-        public function query ($query, $params = [], $method = null) {
+        public function query ($query, $params = null, $method = null) {
+            if ($params === null) $params = [];
             if (is_string($query)) {
                 $query = [$query];
                 $params = [$params];
@@ -42,7 +43,7 @@ namespace FrancescoSorge\PHP {
                     $stmt->bindParam(':' . $param["name"], $param["value"], $param["type"]);
                 }
                 $stmt->execute();
-                if (mb_strpos($single, "SELECT") !== false) {
+                if (mb_strpos($single, "SELECT") !== false || mb_strpos($single, "SHOW ") !== false) {
                     if ($method === "fetchAll") $result[$key] = $stmt->fetchAll();
                     else $result[$key] = $stmt->fetchObject();
                 } else if (mb_strpos($single, "INSERT") !== false) {

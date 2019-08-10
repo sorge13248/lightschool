@@ -1,20 +1,32 @@
 <?php
+
+use FrancescoSorge\PHP\Cookie;
+
 require_once __DIR__ . "/../etc/core.php";
 
 if ($_GET["id"] !== null) {
     $database = new \FrancescoSorge\PHP\Database(new \PDO(CONFIG_DATABASE['driver'] . ":host=" . CONFIG_DATABASE['host'] . ";dbname=" . CONFIG_DATABASE['dbname'] . ";charset=" . CONFIG_DATABASE['charset'], CONFIG_DATABASE["user"], CONFIG_DATABASE["password"]));
 
     require_once __DIR__ . "/../my/app/file-manager/model.php";
+    require_once __DIR__ . "/../my/app/whiteboard/model.php";
 
-    if ($fraUserManagement->isLogged() && (new \FrancescoSorge\PHP\LightSchool\FileManager())->checkOwnership((int)$_GET["id"])) {
-        $owner = $currentUser->id;
-    } else if ($fraUserManagement->isLogged()) {
-        $result = $database->query("SELECT id, profile_picture FROM users_expanded WHERE profile_picture = :id LIMIT 1", [["name" => "id", "value" => (int)$_GET["id"], "type" => \PDO::PARAM_INT]], "fetchAll");
-        if (isset($result[0]) && (int)$_GET["id"] === (int)$result[0]["profile_picture"]) { // Allow to view a file if not owner and not shared only if it is set as profile_picture
-            $owner = $result[0]["id"];
-        } else {
-            require_once __DIR__ . "/../my/app/share/model.php";
-            $owner = (new \FrancescoSorge\PHP\LightSchool\Share())->authorized((int)$_GET["id"]);
+    $owner = null;
+
+    if (\FrancescoSorge\PHP\LightSchool\WhiteBoard::isFileProjecting((int)$_GET["id"], Cookie::get("whiteboard_code"))) {
+        $owner = \FrancescoSorge\PHP\LightSchool\FileManager::getOwner((int)$_GET["id"]);
+    }
+
+    if ($owner === null) {
+        if ($fraUserManagement->isLogged() && (new \FrancescoSorge\PHP\LightSchool\FileManager())->checkOwnership((int)$_GET["id"])) {
+            $owner = $currentUser->id;
+        } else if ($fraUserManagement->isLogged()) {
+            $result = $database->query("SELECT id, profile_picture FROM users_expanded WHERE profile_picture = :id LIMIT 1", [["name" => "id", "value" => (int)$_GET["id"], "type" => \PDO::PARAM_INT]], "fetchAll");
+            if (isset($result[0]) && (int)$_GET["id"] === (int)$result[0]["profile_picture"]) { // Allow to view a file if not owner and not shared only if it is set as profile_picture
+                $owner = $result[0]["id"];
+            } else {
+                require_once __DIR__ . "/../my/app/share/model.php";
+                $owner = (new \FrancescoSorge\PHP\LightSchool\Share())->authorized((int)$_GET["id"]);
+            }
         }
     }
 

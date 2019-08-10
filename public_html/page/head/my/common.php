@@ -1,10 +1,14 @@
 <title><?php echo(strip_tags($this->getVariables("pageTitle"))); ?> - <?php echo(CONFIG_SITE["title"]); ?></title>
 <link rel="stylesheet" href="<?php echo(CONFIG_SITE["baseURL"] . "/css/lightschool-my.css"); ?>"/>
 
-<?php require_once __DIR__ . "/accent.php"; ?>
+<?php
+if ($this->getVariables("fraUserManagement")->isLogged()) {
+    require_once __DIR__ . "/accent.php";
+}
+?>
 
 <?php
-if ((!isset($_GET["min"]) || $_GET["min"] !== 1) && $this->getVariables("currentUser")->theme !== null && file_exists(__DIR__ . "/../../../css/theme/" . urlencode($this->getVariables("currentUser")->theme["unique_name"]) . ".css")) {
+if ($this->getVariables("fraUserManagement")->isLogged() && (!isset($_GET["min"]) || $_GET["min"] !== 1) && $this->getVariables("currentUser")->theme !== null && file_exists(__DIR__ . "/../../../css/theme/" . urlencode($this->getVariables("currentUser")->theme["unique_name"]) . ".css")) {
     ?>
     <link rel="stylesheet"
           href="<?php echo(CONFIG_SITE["baseURL"]); ?>/css/theme/<?php echo(urlencode($this->getVariables("currentUser")->theme["unique_name"])); ?>.css"/>
@@ -32,7 +36,7 @@ if ((!isset($_GET["min"]) || $_GET["min"] !== 1) && $this->getVariables("current
         z-index: -1;
     }
 </style>
-<?php if ($this->getVariables("currentUser")->wallpaper !== null) { ?>
+<?php if ($this->getVariables("fraUserManagement")->isLogged() && $this->getVariables("currentUser")->wallpaper !== null) { ?>
     <style type="text/css" id="background-styles">
         html, body, .content-my {
             background-color: transparent;
@@ -48,7 +52,7 @@ if ((!isset($_GET["min"]) || $_GET["min"] !== 1) && $this->getVariables("current
     </style>
 <?php } ?>
 
-<?php if (!isset($hideWallpaper) || !$hideWallpaper) { ?>
+<?php if ($this->getVariables("fraUserManagement")->isLogged() && (!isset($hideWallpaper) || !$hideWallpaper)) { ?>
     <div class="wallpaper"></div>
     <div class="wallpaper-opacity"></div>
 <?php } ?>
@@ -89,7 +93,7 @@ if ((!isset($_GET["min"]) || $_GET["min"] !== 1) && $this->getVariables("current
 
     const recalculateIcons = () => {
         <?php
-        if (isset($this->getVariables("currentUser")->theme["icon"]) && $this->getVariables("currentUser")->theme["icon"] === "white") {
+        if ($this->getVariables("fraUserManagement")->isLogged() && isset($this->getVariables("currentUser")->theme["icon"]) && $this->getVariables("currentUser")->theme["icon"] === "white") {
         ?>
         $("img").each(function () {
             if (!$(this).hasClass("keep-black") && $(this).is("[src]")) {
@@ -149,7 +153,7 @@ if ((!isset($_GET["min"]) || $_GET["min"] !== 1) && $this->getVariables("current
     });
 
     <?php
-    if ($this->getVariables("currentUser")->theme === null || (isset($this->getVariables("currentUser")->theme["icon"]) && $this->getVariables("currentUser")->theme["icon"] === "black")) {
+    if ($this->getVariables("fraUserManagement")->isLogged() && ($this->getVariables("currentUser")->theme === null || (isset($this->getVariables("currentUser")->theme["icon"]) && $this->getVariables("currentUser")->theme["icon"] === "black"))) {
     ?>
     $(document).on("mouseenter focus", ".img-change-to-white", function () {
         $(this).find("img").each(function () {
@@ -175,7 +179,7 @@ if ((!isset($_GET["min"]) || $_GET["min"] !== 1) && $this->getVariables("current
         });
     });
 
-    <?php } else if (isset($this->getVariables("currentUser")->theme["icon"]) && $this->getVariables("currentUser")->theme["icon"] === "white") { ?>
+    <?php } else if ($this->getVariables("fraUserManagement")->isLogged() && isset($this->getVariables("currentUser")->theme["icon"]) && $this->getVariables("currentUser")->theme["icon"] === "white") { ?>
     $(document).ready(function () {
         recalculateIcons();
     });

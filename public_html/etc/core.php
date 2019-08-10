@@ -6,12 +6,17 @@ require_once __DIR__ . "/../vendor/autoload.php";
 mb_internal_encoding('UTF-8');
 mb_http_output('UTF-8');
 
-// loads config files
-require_once __DIR__ . "/../config/site.php"; // loads website config
-require_once __DIR__ . '/../config/database.php'; // loads database connection credentials
-require_once __DIR__ . '/../config/email.php'; // loads email config
+if (file_exists(__DIR__ . "/../config/site.php")) {
+    // loads config files
+    require_once __DIR__ . "/../config/site.php"; // loads website config
+    require_once __DIR__ . '/../config/database.php'; // loads database connection credentials
+    require_once __DIR__ . '/../config/email.php'; // loads email config
+} else if (!isset($doInstall)) {
+    // Install procedure
+    header("location: install/");
+}
 
-if (CONFIG_SITE["debug"]) {
+if (file_exists(__DIR__ . "/../config/site.php") && CONFIG_SITE["debug"]) {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
@@ -32,6 +37,10 @@ require_once __DIR__ . '/../model/lightschool-user.php';
 require_once __DIR__ . '/../model/keyring.php';
 require_once __DIR__ . '/../model/crypto.php';
 require_once __DIR__ . '/../model/exception-riser.php';
+
+if (!file_exists(__DIR__ . "/../config/site.php")) {
+    return;
+}
 
 $fraLanguage = new FrancescoSorge\PHP\Language();
 

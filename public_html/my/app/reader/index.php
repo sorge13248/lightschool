@@ -1,16 +1,20 @@
 <?php
 require_once __DIR__ . "/../../../etc/core.php";
 
-if ($fraUserManagement->isLogged()) {
+if ($fraUserManagement->isLogged() || isset($_GET["whiteboard"])) {
     $pageTitle = "Lettore";
 
     try {
-        require_once(APP_API);
-        $appApi = new \FrancescoSorge\PHP\LightSchool\AppApi();
+        if ($fraUserManagement->isLogged()) {
+            require_once(APP_API);
+            $appApi = new \FrancescoSorge\PHP\LightSchool\AppApi();
+        }
 
         $_GET["id"] = (isset($_GET["id"]) && $_GET["id"] !== "" ? $_GET["id"] : null);
 
-        $googleDocs = \FrancescoSorge\PHP\LightSchool\User::get(["privacy_ms_office"])["privacy_ms_office"];
+        if ($fraUserManagement->isLogged()) {
+            $googleDocs = \FrancescoSorge\PHP\LightSchool\User::get(["privacy_ms_office"])["privacy_ms_office"];
+        }
         if (isset($googleDocs) && $googleDocs == 1) {
             $allowOnce = false;
             if ((bool)\FrancescoSorge\PHP\Cookie::get("temp_google_documents") === true) {
