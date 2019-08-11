@@ -4,7 +4,18 @@ $database = new \FrancescoSorge\PHP\Database(new \PDO(CONFIG_DATABASE['driver'] 
 $ownership = true;
 if ($_GET["id"] !== null) {
     require_once __DIR__ . "/../file-manager/model.php";
-    $ownership = (new \FrancescoSorge\PHP\LightSchool\FileManager())->checkOwnership((int)$_GET["id"]);
+    require_once __DIR__ . "/../project/model.php";
+
+    $owner = null;
+    if (\FrancescoSorge\PHP\LightSchool\Project::isFileProjecting((int)$_GET["id"], \FrancescoSorge\PHP\Cookie::get("project_code")) && \FrancescoSorge\PHP\LightSchool\Project::isFileEditable((int)$_GET["id"], \FrancescoSorge\PHP\Cookie::get("project_code"))) {
+        $owner = \FrancescoSorge\PHP\LightSchool\FileManager::getOwner((int)$_GET["id"]);
+    }
+
+    if (!$this->getVariables("fraUserManagement")->isLogged() && $owner === null) {
+        $ownership = false;
+    } else {
+        $ownership = (new \FrancescoSorge\PHP\LightSchool\FileManager())->checkOwnership((int)$_GET["id"], $owner);
+    }
 }
 ?>
 
@@ -112,9 +123,14 @@ if ($_GET["id"] !== null) {
                     const ajax = new FraAjax($(this).attr("action") + "&type=" + (response === null ? "create" : "edit"), $(this).attr("method"), form.getInput() + "&content=" + content);
 
                     ajax.execute(function (result) {
+                        console.log(result);
                         const createNotification = new FraNotifications("notebook-created-" + FraBasic.generateGUID(), result["text"]);
                         if (result["response"] === "success") {
-                            window.location.href = ConfigSite.baseURL + "/my/app/reader/notebook/" + result["id"];
+                            if (typeof result["id"] !== "undefined") {
+                                window.location.href = ConfigSite.baseURL + "/my/app/reader/notebook/" + result["id"];
+                            } else {
+                                form.unlock();
+                            }
                         } else {
                             createNotification.setType("error");
                             form.unlock();

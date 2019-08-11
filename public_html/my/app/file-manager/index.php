@@ -13,7 +13,7 @@ if ($fraUserManagement->isLogged()) {
         $appApi = new \FrancescoSorge\PHP\LightSchool\AppApi();
 
         $headPage = ["my/common.php", "my/cm-file.php"];
-        $bodyPage = ["my/menu.php", "my/app/file-manager/folder-view.php", "my/app/file-manager/dialog/share.php", "my/app/file-manager/dialog/rename.php", "my/app/file-manager/dialog/delete.php", "my/app/file-manager/dialog/property.php", "my/app/file-manager/dialog/fav.php"];
+        $bodyPage = ["my/menu.php", "my/app/file-manager/folder-view.php", "my/app/file-manager/dialog/share.php", "my/app/file-manager/dialog/rename.php", "my/app/file-manager/dialog/delete.php", "my/app/file-manager/dialog/property.php", "my/app/file-manager/dialog/fav.php", "my/app/project/dialog/project.php"];
     } catch (\FrancescoSorge\PHP\LightSchool\AppNotPurchased $e) {
         $headPage = ["my/common.php"];
         $bodyPage = ["my/menu.php", "my/app-not-purchased.php"];

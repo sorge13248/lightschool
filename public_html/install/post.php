@@ -61,6 +61,15 @@ try {
     die(json_encode($response));
 }
 
+// Generate AES secret key
+try {
+    writeToFile(__DIR__."/../config/secret.key", (\Defuse\Crypto\Key::createNewRandomKey())->saveToAsciiSafeString());
+} catch(\Exception $e) {
+    $response["response"] = "error";
+    $response["text"] = $e->getMessage();
+    die(json_encode($response));
+}
+
 // site.php
 try {
     $url = addslashes($_POST["url"]);

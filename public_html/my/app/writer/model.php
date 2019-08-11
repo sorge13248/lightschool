@@ -93,7 +93,19 @@ namespace FrancescoSorge\PHP\LightSchool {
                 return ["response" => "error", "text" => "invalid_id"];
             }
 
-            $userid = isset($userid) ? $userid : $fraUserManagement->getCurrentUserInfo(["id"], ["users"])->id;
+            if ($userid === null && \FrancescoSorge\PHP\LightSchool\Project::isFileProjecting((int)$_GET["id"], \FrancescoSorge\PHP\Cookie::get("project_code")) && \FrancescoSorge\PHP\LightSchool\Project::isFileEditable((int)$_GET["id"], \FrancescoSorge\PHP\Cookie::get("project_code"))) {
+                $userid = \FrancescoSorge\PHP\LightSchool\FileManager::getOwner((int)$_GET["id"]);
+            }
+
+            if ($userid === null && !$fraUserManagement->isLogged()) {
+                $userid = null;
+            } else {
+                $userid = isset($userid) ? $userid : $fraUserManagement->getCurrentUserInfo(["id"], ["users"])->id;
+            }
+
+            if ($userid === null) {
+                return ["response" => "error", "text" => "ownership"];
+            }
 
             $content = Crypto::encrypt($content, null, $userid);
 

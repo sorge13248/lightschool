@@ -46,7 +46,7 @@ See https://github.com/adobe-type-tools/cmap-resources
         }
     </style>
     <?php
-    if ((!isset($_GET["min"]) || $_GET["min"] !== 1) && $this->getVariables("currentUser")->theme !== null && file_exists(__DIR__ . "/../../../css/theme/" . urlencode($this->getVariables("currentUser")->theme["unique_name"]) . ".css")) {
+    if ($this->getVariables("fraUserManagement")->isLogged() && ((!isset($_GET["min"]) || $_GET["min"] !== 1) && $this->getVariables("currentUser")->theme !== null && file_exists(__DIR__ . "/../../../css/theme/" . urlencode($this->getVariables("currentUser")->theme["unique_name"]) . ".css"))) {
         ?>
         <link rel="stylesheet"
               href="<?php echo(CONFIG_SITE["baseURL"]); ?>/css/theme/<?php echo(urlencode($this->getVariables("currentUser")->theme["unique_name"])); ?>.css"/>
@@ -62,7 +62,7 @@ See https://github.com/adobe-type-tools/cmap-resources
     </script>
 
     <?php
-    if ($this->getVariables("currentUser")->wallpaper !== null) { ?>
+    if ($this->getVariables("fraUserManagement")->isLogged() && $this->getVariables("currentUser")->wallpaper !== null) { ?>
         <style type="text/css">
             body.pdfReaderBody {
                 background-color: transparent;

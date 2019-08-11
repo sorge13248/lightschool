@@ -73,7 +73,5 @@
 <body>
 <?php new FrancescoSorge\PHP\Page($bodyPage, $variablesToPages, "body"); ?>
 </body>
-<script>
 
-</script>
 </html>

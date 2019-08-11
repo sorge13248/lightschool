@@ -120,6 +120,9 @@ if ($fraUserManagement->isLogged()) {
         }
         unset($wallpaper);
     }
+} else {
+    \FrancescoSorge\PHP\Cookie::delete("drafts");
+    \FrancescoSorge\PHP\Cookie::delete("whiteboard_code");
 }
 
 define("CONTROLLER", __DIR__ . "/../controller");

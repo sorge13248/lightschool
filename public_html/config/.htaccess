@@ -1,0 +1,3 @@
+<FilesMatch "secret.key" >
+    deny from all
+</FilesMatch>

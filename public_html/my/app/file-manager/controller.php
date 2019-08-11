@@ -34,7 +34,7 @@ if ($fraUserManagement->isLogged() || ($_GET["type"] === "details")) {
                 break;
         }
     } else if ($type === "details") {
-        require_once __DIR__ . "/../whiteboard/model.php";
+        require_once __DIR__ . "/../project/model.php";
 
         if (isset($_GET['id'])) {
             if (isset($_GET["fields"])) {

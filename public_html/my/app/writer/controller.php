@@ -1,12 +1,12 @@
 <?php
 require_once __DIR__ . "/../../../etc/core.php";
 
-if ($fraUserManagement->isLogged()) {
+$type = isset($_GET["type"]) ? $_GET["type"] : null;
+if ($fraUserManagement->isLogged() || $type === "edit") {
     header('Content-type:application/json;charset=utf-8');
 
     require_once "model.php";
 
-    $type = isset($_GET["type"]) ? $_GET["type"] : null;
     $response = [];
 
     if ($type === "create") {
@@ -36,6 +36,9 @@ if ($fraUserManagement->isLogged()) {
                 break;
         }
     } else if ($type === "edit") {
+        require_once __DIR__ . "/../project/model.php";
+        require_once __DIR__ . "/../file-manager/model.php";
+
         $id = isset($_GET["id"]) ? (int)urlencode($_GET["id"]) : null;
         $name = isset($_POST["name"]) && $_POST["name"] !== "" ? $_POST["name"] : null;
         $content = isset($_POST["content"]) ? $_POST["content"] : null;
@@ -48,6 +51,9 @@ if ($fraUserManagement->isLogged()) {
                 break;
             case "invalid_id":
                 $response["text"] = "ID non valido";
+                break;
+            case "ownership":
+                $response["text"] = "Il file non &egrave; di tua propriet&agrave;";
                 break;
         }
     } else {

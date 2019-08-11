@@ -816,7 +816,7 @@ namespace FrancescoSorge\PHP\LightSchool {
 
             if ($force === null) $force = false;
 
-            if (\FrancescoSorge\PHP\LightSchool\WhiteBoard::isFileProjecting($id, Cookie::get("whiteboard_code"))) {
+            if (\FrancescoSorge\PHP\LightSchool\Project::isFileProjecting($id, Cookie::get("project_code"))) {
                 $userid = \FrancescoSorge\PHP\LightSchool\FileManager::getOwner($id);
             } else if ($this->userManagement->isLogged()) {
                 $userid = isset($userid) ? $userid : $this->userManagement->getCurrentUserInfo(["id"], ["users"])->id;

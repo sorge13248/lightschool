@@ -5,70 +5,75 @@ if ($_GET["id"] !== null) {
     $owner = null;
 
     require_once __DIR__ . "/../file-manager/model.php";
-    require_once __DIR__ . "/../whiteboard/model.php";
+    require_once __DIR__ . "/../project/model.php";
 
-    if (\FrancescoSorge\PHP\LightSchool\WhiteBoard::isFileProjecting((int)$_GET["id"], \FrancescoSorge\PHP\Cookie::get("whiteboard_code"))) {
+    if (\FrancescoSorge\PHP\LightSchool\Project::isFileProjecting((int)$_GET["id"], \FrancescoSorge\PHP\Cookie::get("project_code"))) {
         $owner = \FrancescoSorge\PHP\LightSchool\FileManager::getOwner((int)$_GET["id"]);
     }
 
-    if ($owner === null) {
-        if ($_GET["type"] === "contact" || (new \FrancescoSorge\PHP\LightSchool\FileManager())->checkOwnership((int)$_GET["id"])) {
-            $owner = $this->getVariables("currentUser")->id;
-        } else {
-            require_once __DIR__ . "/../share/model.php";
-            $owner = (new \FrancescoSorge\PHP\LightSchool\Share())->authorized((int)$_GET["id"]);
-        }
-    }
-
-    if ($_GET["type"] === "notebook") {
-        require_once CONTROLLER . "/notebook.php";
-        $file = (new \FrancescoSorge\PHP\LightSchool\Notebook())->getDetails($_GET["id"], $owner, false);
-        if ($file["response"] === "success") {
-            $file = $file["notebook"];
-        } else {
-            $file = null;
-        }
-    } else if ($_GET["type"] === "file") {
-        require_once CONTROLLER . "/file.php";
-        require_once __DIR__ . "/../share/model.php";
-        $file = (new \FrancescoSorge\PHP\LightSchool\File())->getDetails($_GET["id"], $owner);
-        if ($file["response"] === "success") {
-            $file = $file["file"];
-        } else {
-            $file = null;
-        }
-        $googleDocs = \FrancescoSorge\PHP\LightSchool\User::get(["privacy_ms_office"])["privacy_ms_office"];
-        $allowOnce = $this->getVariables("allowOnce") !== null ? $this->getVariables("allowOnce") : false;
-        $canPreview = in_array($file["file_type"], ["application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.openxmlformats-officedocument.wordprocessingml.template", "application/vnd.ms-word.document.macroEnabled.12", "application/vnd.ms-word.template.macroEnabled.12", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "application/vnd.ms-excel.sheet.macroEnabled.12", "application/vnd.ms-excel.template.macroEnabled.12", "application/vnd.ms-excel.addin.macroEnabled.12", "application/vnd.ms-excel.sheet.binary.macroEnabled.12", "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/vnd.openxmlformats-officedocument.presentationml.template", "application/vnd.openxmlformats-officedocument.presentationml.slideshow", "application/vnd.ms-powerpoint.addin.macroEnabled.12", "application/vnd.ms-powerpoint.presentation.macroEnabled.12", "application/vnd.ms-powerpoint.template.macroEnabled.12", "application/vnd.ms-powerpoint.slideshow.macroEnabled.12", "application/vnd.oasis.opendocument.text", "application/vnd.oasis.opendocument.spreadsheet", "application/vnd.oasis.opendocument.presentation"]);
-        if (($googleDocs == 2 || $allowOnce) && $canPreview) {
-            \FrancescoSorge\PHP\LightSchool\FileManager::setBypass((int)$_GET["id"]);
-        }
-    } else if ($_GET["type"] === "diary") {
-        require_once __DIR__ . "/../diary/model.php";
-        $file = (new \FrancescoSorge\PHP\LightSchool\Diary())->getDetails($_GET["id"], $owner);
-        if ($file["response"] === "success") {
-            if (isset($file["error"])) {
-                $error = $file["error"];
+    if (!$this->getVariables("fraUserManagement")->isLogged() && $owner === null) {
+        $_GET["id"] = null;
+        $file = null;
+    } else {
+        if ($owner === null) {
+            if ($_GET["type"] === "contact" || (new \FrancescoSorge\PHP\LightSchool\FileManager())->checkOwnership((int)$_GET["id"])) {
+                $owner = $this->getVariables("currentUser")->id;
+            } else {
+                require_once __DIR__ . "/../share/model.php";
+                $owner = (new \FrancescoSorge\PHP\LightSchool\Share())->authorized((int)$_GET["id"]);
             }
-            $file = $file["event"];
-        } else {
-            $file = null;
         }
-    } else if ($_GET["type"] === "contact") {
-        require_once __DIR__ . "/../../app/contact/model.php";
-        $file = (new \FrancescoSorge\PHP\LightSchool\Contact())->getDetails($_GET["id"], $owner);
-        if ($file["response"] === "success") {
-            $file = $file["contact"];
-        } else {
-            $file = null;
+
+        if ($_GET["type"] === "notebook") {
+            require_once CONTROLLER . "/notebook.php";
+            $file = (new \FrancescoSorge\PHP\LightSchool\Notebook())->getDetails($_GET["id"], $owner, false);
+            if ($file["response"] === "success") {
+                $file = $file["notebook"];
+            } else {
+                $file = null;
+            }
+        } else if ($_GET["type"] === "file") {
+            require_once CONTROLLER . "/file.php";
+            require_once __DIR__ . "/../share/model.php";
+            $file = (new \FrancescoSorge\PHP\LightSchool\File())->getDetails($_GET["id"], $owner);
+            if ($file["response"] === "success") {
+                $file = $file["file"];
+            } else {
+                $file = null;
+            }
+            $googleDocs = \FrancescoSorge\PHP\LightSchool\User::get(["privacy_ms_office"], $owner)["privacy_ms_office"];
+            $allowOnce = $this->getVariables("allowOnce") !== null ? $this->getVariables("allowOnce") : false;
+            $canPreview = in_array($file["file_type"], ["application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.openxmlformats-officedocument.wordprocessingml.template", "application/vnd.ms-word.document.macroEnabled.12", "application/vnd.ms-word.template.macroEnabled.12", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "application/vnd.ms-excel.sheet.macroEnabled.12", "application/vnd.ms-excel.template.macroEnabled.12", "application/vnd.ms-excel.addin.macroEnabled.12", "application/vnd.ms-excel.sheet.binary.macroEnabled.12", "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/vnd.openxmlformats-officedocument.presentationml.template", "application/vnd.openxmlformats-officedocument.presentationml.slideshow", "application/vnd.ms-powerpoint.addin.macroEnabled.12", "application/vnd.ms-powerpoint.presentation.macroEnabled.12", "application/vnd.ms-powerpoint.template.macroEnabled.12", "application/vnd.ms-powerpoint.slideshow.macroEnabled.12", "application/vnd.oasis.opendocument.text", "application/vnd.oasis.opendocument.spreadsheet", "application/vnd.oasis.opendocument.presentation"]);
+            if (($googleDocs == 2 || $allowOnce) && $canPreview) {
+                \FrancescoSorge\PHP\LightSchool\FileManager::setBypass((int)$_GET["id"], $owner);
+            }
+        } else if ($_GET["type"] === "diary") {
+            require_once __DIR__ . "/../diary/model.php";
+            $file = (new \FrancescoSorge\PHP\LightSchool\Diary())->getDetails($_GET["id"], $owner);
+            if ($file["response"] === "success") {
+                if (isset($file["error"])) {
+                    $error = $file["error"];
+                }
+                $file = $file["event"];
+            } else {
+                $file = null;
+            }
+        } else if ($_GET["type"] === "contact") {
+            require_once __DIR__ . "/../../app/contact/model.php";
+            $file = (new \FrancescoSorge\PHP\LightSchool\Contact())->getDetails($_GET["id"], $owner);
+            if ($file["response"] === "success") {
+                $file = $file["contact"];
+            } else {
+                $file = null;
+            }
         }
-    }
 
-    if (isset($file) && $file !== null) {
-        $file["type"] = (isset($file["type"]) ? $file["type"] : $_GET["type"]);
+        if (isset($file) && $file !== null) {
+            $file["type"] = (isset($file["type"]) ? $file["type"] : $_GET["type"]);
 
-        if ($file["type"] === "contact") {
-            $file['users_expanded.profile_picture'] = ($file['users_expanded.profile_picture'] === null ? CONFIG_SITE["baseURL"] . "/upload/mono/black/user.png" : $file['users_expanded.profile_picture']);
+            if ($file["type"] === "contact") {
+                $file['users_expanded.profile_picture'] = ($file['users_expanded.profile_picture'] === null ? CONFIG_SITE["baseURL"] . "/upload/mono/black/user.png" : $file['users_expanded.profile_picture']);
+            }
         }
     }
     if ($file["type"] === "notebook") { ?>

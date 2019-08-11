@@ -63,6 +63,14 @@
         checkPastingFile();
     });
 
+    $(document).on("click", ".fra-context-menu[fileid] .project", function (e) {
+        e.preventDefault();
+        const id = $(this).closest(".fra-context-menu[fileid]").attr("fileid");
+        const filename = $(".icon[fileid='" + id + "'] .filename").text();
+
+        openProjectDialog(id, filename,  $(".icon[fileid='" + id + "']").hasClass("notebook"));
+    });
+
     const moveFile = (id, folder, type = null) => {
         const ajax = new FraAjax(ConfigSite.baseURL + "/my/app/file-manager/controller.php?type=move&id=" + id + "&folder=" + folder + "&mode=" + type, "POST", "");
 
@@ -128,6 +136,8 @@
                 src="<?php echo(CONFIG_SITE["baseURL"]); ?>/upload/mono/white/download.png"/>Scarica</a>
     <a href="#" class="accent-bkg-all-darker box-shadow-1-all folder notebook file diary share"><img
                 src="<?php echo(CONFIG_SITE["baseURL"]); ?>/upload/mono/white/share.png"/>Condividi</a>
+    <a href="#" class="accent-bkg-all-darker box-shadow-1-all notebook file diary project"><img
+                src="<?php echo(CONFIG_SITE["baseURL"]); ?>/my/app/project/icon/white/icon.png"/>Proietta</a>
     <a href="#" class="accent-bkg-all-darker box-shadow-1-all folder notebook file rename"><img
                 src="<?php echo(CONFIG_SITE["baseURL"]); ?>/upload/mono/white/edit.png"/>Rinomina</a>
     <!--    <a href="#" class="accent-bkg-all-darker box-shadow-1-all folder notebook file move"><img src="-->

@@ -1,6 +1,6 @@
 <div class="welcome center-content background-image">
         <span>
-            <?php if (file_exists(__DIR__ . "/../../../install/")) { ?>
+            <?php if (file_exists(__DIR__ . "/../../install/")) { ?>
                 <div class="alert alert-danger">
                     <h2>Cartella d'installazione ancora presente</h2>
                     <p>La cartella d'installazione di LightSchool &egrave; ancora presente e questo significa un grossissimo rischio per la sicurezza e per l'integrit&agrave; di LightSchool. Elimina la cartella "install" il prima possibile!</p>

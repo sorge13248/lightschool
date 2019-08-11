@@ -41,7 +41,6 @@ if (!$fraUserManagement->isLogged()) {
 
                         \FrancescoSorge\PHP\Cookie::delete("temp_2fa_id");
                         \FrancescoSorge\PHP\Cookie::delete("temp_2fa_token");
-                        \FrancescoSorge\PHP\Cookie::delete("drafts");
 
                         $response["response"] = "success";
                         $response["text"] = "Codice OTP valido. Accesso in corso...";
@@ -81,7 +80,6 @@ if (!$fraUserManagement->isLogged()) {
             if ($twofa === null) {
                 \FrancescoSorge\PHP\Cookie::delete("temp_2fa_id");
                 \FrancescoSorge\PHP\Cookie::delete("temp_2fa_token");
-                \FrancescoSorge\PHP\Cookie::delete("drafts");
 
                 $response["response"] = "success";
                 $response["text"] = "Accesso in corso...";

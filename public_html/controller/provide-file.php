@@ -8,11 +8,11 @@ if ($_GET["id"] !== null) {
     $database = new \FrancescoSorge\PHP\Database(new \PDO(CONFIG_DATABASE['driver'] . ":host=" . CONFIG_DATABASE['host'] . ";dbname=" . CONFIG_DATABASE['dbname'] . ";charset=" . CONFIG_DATABASE['charset'], CONFIG_DATABASE["user"], CONFIG_DATABASE["password"]));
 
     require_once __DIR__ . "/../my/app/file-manager/model.php";
-    require_once __DIR__ . "/../my/app/whiteboard/model.php";
+    require_once __DIR__ . "/../my/app/project/model.php";
 
     $owner = null;
 
-    if (\FrancescoSorge\PHP\LightSchool\WhiteBoard::isFileProjecting((int)$_GET["id"], Cookie::get("whiteboard_code"))) {
+    if (\FrancescoSorge\PHP\LightSchool\Project::isFileProjecting((int)$_GET["id"], Cookie::get("project_code"))) {
         $owner = \FrancescoSorge\PHP\LightSchool\FileManager::getOwner((int)$_GET["id"]);
     }
 
@@ -30,7 +30,7 @@ if ($_GET["id"] !== null) {
         }
     }
 
-    if ($fraUserManagement->isLogged()) {
+    if ($fraUserManagement->isLogged() || (!$fraUserManagement->isLogged() && $owner != null)) {
         $query = "SELECT name, file_url, file_type, file_size FROM file WHERE id = :file AND user_id = :user_id AND type = 'file' LIMIT 1";
         $params = [
             [

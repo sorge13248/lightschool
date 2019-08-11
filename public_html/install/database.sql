@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 10, 2019 at 03:04 PM
+-- Generation Time: Aug 11, 2019 at 03:04 PM
 -- Server version: 10.1.31-MariaDB
 -- PHP Version: 7.2.4
 
@@ -119,6 +119,7 @@ INSERT INTO `app_catalog` (`unique_name`, `version`, `category`, `author`, `visi
 ('diary', 1, 'system', NULL, 1, 1, 0, 0, 'Diary', 'Diario', NULL, NULL, NULL, 0, '2019-01-01 07:00:00', NULL),
 ('file-manager', 1, 'system', NULL, 1, 1, 0, 0, 'File Manager', 'Gestore file', '<p>Take notes, upload files and organize them in folders</p>', '<p>Prendi appunti, carica file e organizzali in cartelle</p>', NULL, 0, '2019-01-01 07:00:00', NULL),
 ('message', 1, 'system', NULL, 1, 1, 0, 0, 'Message', 'Messaggi', NULL, NULL, NULL, 0, '2019-01-01 07:00:00', NULL),
+('project', 0.1, 'system', NULL, 1, 1, 0, 0, 'WhiteBoard', 'LIM', NULL, NULL, NULL, 1, '2019-08-10 08:40:00', NULL),
 ('quiz', 0.1, 'system', NULL, 0, 1, 0, 0, 'Quiz', 'Quiz', NULL, NULL, NULL, 1, '2019-01-01 07:00:00', NULL),
 ('reader', 1, 'system', NULL, 1, 1, 0, 0, 'Reader', 'Lettore', NULL, NULL, NULL, 0, '2019-01-01 07:00:00', NULL),
 ('register', 0.1, 'system', NULL, 0, 1, 0, 0, 'Register', 'Registro', NULL, NULL, NULL, 1, '2019-01-01 07:00:00', NULL),
@@ -130,7 +131,6 @@ INSERT INTO `app_catalog` (`unique_name`, `version`, `category`, `author`, `visi
 ('t-default', 1, 'themes', NULL, 1, 0, 1, 0, 'Default', 'Predefinito', NULL, NULL, NULL, 0, '2019-01-01 07:00:00', 'black'),
 ('timetable', 1, 'system', NULL, 1, 1, 0, 0, 'Timetable', 'Orario', NULL, NULL, NULL, 0, '2019-01-01 07:00:00', NULL),
 ('trash', 1, 'system', NULL, 1, 1, 0, 0, 'Trash', 'Cestino', NULL, NULL, NULL, 0, '2019-01-01 07:00:00', NULL),
-('whiteboard', 0.1, 'system', NULL, 1, 1, 0, 0, 'WhiteBoard', 'LIM', NULL, NULL, NULL, 1, '2019-08-10 08:40:00', NULL),
 ('writer', 1, 'system', NULL, 1, 1, 0, 0, 'Writer', 'Writer', NULL, NULL, NULL, 0, '2019-01-01 07:00:00', NULL);
 
 -- --------------------------------------------------------
@@ -613,6 +613,39 @@ INSERT INTO `plan` (`id`, `name`, `disk_space`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `project`
+--
+
+CREATE TABLE IF NOT EXISTS `project` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `code` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `gen_id` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `project_files`
+--
+
+CREATE TABLE IF NOT EXISTS `project_files` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `project` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `file` int(10) UNSIGNED NOT NULL,
+  `user` int(10) UNSIGNED NOT NULL,
+  `editable` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `whiteboard_2` (`project`,`file`),
+  KEY `whiteboard` (`project`),
+  KEY `file` (`file`),
+  KEY `user` (`user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `school`
 --
 
@@ -828,22 +861,6 @@ CREATE TABLE IF NOT EXISTS `users_throttling` (
   PRIMARY KEY (`bucket`),
   KEY `expires_at` (`expires_at`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `whiteboard`
---
-
-CREATE TABLE IF NOT EXISTS `whiteboard` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `code` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `files` longtext COLLATE utf8mb4_unicode_ci,
-  `editable` longtext COLLATE utf8mb4_unicode_ci,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `gen_id` (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 

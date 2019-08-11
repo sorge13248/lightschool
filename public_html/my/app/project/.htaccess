@@ -9,4 +9,4 @@ ErrorDocument 404 /404.php
 
 DirectoryIndex index.php
 
-RewriteRule ^([0-9]+) show.php?id=$1
+RewriteRule ^projection/ index.php?screen=projection
