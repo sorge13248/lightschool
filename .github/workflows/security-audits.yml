@@ -7,7 +7,7 @@ on:
     - cron: '0 8 * * 1'
 
 jobs:
-  php-security-audit:
+  php:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -36,7 +36,7 @@ jobs:
       - name: Run security audit
         run: composer audit --format=json
 
-  node-security-audit:
+  node:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -47,6 +47,8 @@ jobs:
         with:
           node-version: 'lts/*'
           cache: 'npm'
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
       - name: Install dependencies
         run: npm ci
