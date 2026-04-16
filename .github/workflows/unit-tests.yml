@@ -1,0 +1,62 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  php-tests:
+    name: PHP Tests (Pest)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: buildx-${{ hashFiles('docker-compose.tests.yml', 'Dockerfile*') }}
+          restore-keys: buildx-
+
+      - name: Pull and cache base images
+        run: |
+          docker pull php:8.5-cli-alpine &
+          docker pull composer:2 &
+          docker pull httpd:alpine &
+          wait
+        # Pulls in parallel; Buildx will use these from the local daemon cache
+
+      - name: Build test images
+        run: |
+          docker compose -f docker-compose.tests.yml build \
+            --build-arg BUILDKIT_INLINE_CACHE=1
+
+      - name: Run Pest tests
+        run: |
+          docker compose -f docker-compose.tests.yml up \
+            --abort-on-container-exit \
+            --exit-code-from tests
+
+      - name: Update Docker layer cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: buildx-${{ hashFiles('docker-compose.tests.yml', 'Dockerfile*') }}

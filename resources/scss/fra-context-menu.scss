@@ -1,0 +1,65 @@
+/*
+ * Francesco Sorge (http://www.francescosorge.com)
+ * Copyright 2018-present Francesco Sorge
+ * Licensed under Apache (http://www.apache.org/licenses/LICENSE-2.0)
+ */
+
+@use "variables" as *;
+
+.fra-context-menu {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  background-color: $accent-flat;
+  color: white;
+  padding: 10px 0;
+  z-index: 100000;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+
+  &.visible {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (max-width: 576px) {
+    position: fixed;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+    overflow-y: scroll;
+  }
+
+  > * {
+    margin: 0;
+    padding: 0.5rem 1rem;
+    display: block;
+    color: white !important;
+    text-decoration: none;
+    cursor: pointer;
+    text-align: left;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+
+    &:hover,
+    &:focus {
+      @include accent-gradient;
+      @include accent-shadow("0 0 37px -8px");
+      text-decoration: none;
+    }
+  }
+
+  img {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+  }
+}

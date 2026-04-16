@@ -1,0 +1,282 @@
+/*
+ * Francesco Sorge (http://www.francescosorge.com)
+ * Copyright 2018-present Francesco Sorge
+ * Licensed under Apache (http://www.apache.org/licenses/LICENSE-2.0)
+ */
+
+@use 'sass:list';
+@use 'variables' as *;
+
+// === App Page Overrides =====================================================
+
+html, body {
+    background-color: white;
+    overflow-x: hidden;
+}
+
+// === Top / Bottom Menu Bar ==================================================
+// Used by Writer.svelte and Reader.svelte via .menu-my elements in their templates.
+
+.menu-my {
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100%;
+    padding: 0 10px;
+    margin: 0;
+    z-index: 70000;
+    @include accent-gradient;
+    color: white;
+
+    &.top {
+        top: -60px;
+        box-shadow: 0 3px 16px 0 $accent-start;
+
+        img { width: 24px; }
+    }
+
+    &.big img {
+        width: 32px !important;
+        height: 32px !important;
+        margin: 8px !important;
+    }
+
+    &.small img {
+        width: 16px !important;
+        height: 16px !important;
+        margin: 2px !important;
+    }
+}
+
+// === App Content Area =======================================================
+
+.content-my {
+    padding: 40px;
+    padding-bottom: 70px;
+    max-width: 100%;
+
+    @media (max-width: 576px) {
+        padding: 60px 2px 80px;
+    }
+}
+
+// === File / App Icons =======================================================
+
+// Responsive column breakpoints (2 → 20 columns as viewport grows)
+$icon-breakpoints: (
+    (700,  50%,    8px),
+    (900,  33.33%, 8px),
+    (1200, 25%,    9px),
+    (1500, 20%,    9px),
+    (1700, 16.66%, 9px),
+    (1900, 14.28%, 9px),
+    (2100, 12.5%,  9px),
+    (2300, 11.11%, 9px),
+    (2500, 10%,    10px),
+    (2700, 9.09%,  10px),
+    (2900, 8.33%,  10px),
+    (3100, 7.69%,  10px),
+    (3300, 7.14%,  10px),
+    (3500, 6.66%,  10px),
+    (3700, 6.25%,  10px),
+    (3900, 5.88%,  10px),
+    (4100, 5.55%,  10px),
+    (4300, 5.26%,  10px),
+    (4500, 5%,     10px),
+);
+
+.icon {
+    display: inline-block;
+    width: 100%;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: black;
+    border-radius: 10px;
+    max-width: 100%;
+
+    &.image {
+        padding: 2px;
+        height: 100px;
+
+        > *:not(.filename) {
+            display: none !important;
+        }
+
+        > .filename {
+            margin-top: 70px;
+            text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+        }
+
+        &:hover, &:focus {
+            > .filename {
+                text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+            }
+        }
+    }
+
+    > img {
+        width: 40px;
+        margin-right: 10px;
+    }
+
+    > .second-row {
+        display: block;
+        margin-top: -5px;
+        font-size: 0.8em;
+        color: gray;
+    }
+
+    &:hover, &:focus, &.selected {
+        text-decoration: none;
+        @include accent-gradient;
+        @include accent-shadow("0 0 37px -8px");
+
+        &, * {
+            color: white !important;
+        }
+    }
+}
+
+@each $entry in $icon-breakpoints {
+    $bp:  list.nth($entry, 1);
+    $pct: list.nth($entry, 2);
+    $gap: list.nth($entry, 3);
+
+    @media (min-width: #{$bp}px) {
+        .icon { max-width: calc(#{$pct} - #{$gap}); }
+    }
+}
+
+// === Search =================================================================
+
+.search-no-result {
+    display: none;
+}
+
+// === Breadcrumb =============================================================
+
+.breadcrumb img {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+}
+
+// === Emergency Overlay ======================================================
+
+.emergency {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+    background-color: red;
+    color: white;
+    text-align: center;
+    z-index: 100000000;
+    display: none;
+    overflow-y: scroll;
+}
+
+// === Loading ================================================================
+
+.loading {
+    text-align: center;
+    font-size: 2.5em;
+}
+
+// === Settings App ===========================================================
+
+.settings-app .privacy-form label {
+    width: 100%;
+    max-width: 300px;
+    text-align: right;
+
+    @media (max-width: 768px) {
+        text-align: left;
+        width: auto;
+        max-width: 100%;
+    }
+}
+
+// === PDF Viewer =============================================================
+
+.pdfViewer .page {
+    border-image: none;
+    border: 1px solid grey;
+    margin: 10px 0;
+}
+
+body.pdfReaderBody {
+    background-image: none;
+    background-color: white;
+}
+
+#toolbarContainer, .findbar, .secondaryToolbar, #toolbarSidebar {
+    background-color: white;
+    background-image: none;
+    box-shadow: none;
+    color: black;
+}
+
+.toolbarButton {
+    background-color: grey;
+}
+
+.secondaryToolbarButton, #scaleSelect, #pageNumber {
+    color: black;
+}
+
+#scaleSelect {
+    background-color: white;
+}
+
+#sidebarContainer {
+    border-top: none;
+}
+
+@media (max-width: 840px) {
+    #sidebarContent {
+        background-color: rgba(255, 255, 255, 0.9);
+    }
+}
+
+#documentPropertiesOverlay .dialog {
+    @include accent-gradient;
+    @include accent-shadow("0 0 37px -8px");
+    color: #d9d9d9;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.thumbnail.selected > .thumbnailSelectionRing {
+    @include accent-gradient;
+    @include accent-shadow("0 0 37px -8px");
+    background-clip: padding-box;
+    color: white;
+}
+
+// === Load More ==============================================================
+
+.load-more {
+    display: none;
+}
+
+// === FraWindows Accent Theme (app-specific overrides) =======================
+
+.fra-windows .titlebar {
+    @include accent-gradient;
+
+    > * > .control {
+        &:hover, &:focus {
+            background-color: $accent-dark;
+        }
+
+        &.red {
+            &:hover, &:focus {
+                background-image: linear-gradient(to right, #c01603, #ff1d04);
+            }
+        }
+    }
+}

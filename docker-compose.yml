@@ -1,0 +1,110 @@
+services:
+  apache:
+    build:
+      context: docker/apache
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html:ro
+    depends_on:
+      php:
+        condition: service_healthy
+
+  php:
+    build:
+      context: docker/php
+    env_file:
+      - .env
+    volumes:
+      - .:/var/www/html
+      - ./docker/secure:/var/lightschool/secure
+      - laravel_vendor:/var/www/html/vendor
+    working_dir: /var/www/html
+    command: >
+      sh -c "
+        composer install --no-interaction --prefer-dist &&
+        mkdir -p storage/logs storage/framework/cache/data storage/framework/sessions storage/framework/views storage/app/uploads storage/app/private &&
+        chmod -R 777 storage bootstrap/cache &&
+        mkdir -p /var/lightschool/secure &&
+        chmod -R 775 /var/lightschool/secure &&
+        php artisan migrate --force --seed &&
+        exec php-fpm
+      "
+    healthcheck:
+      test: ["CMD", "php-fpm", "-t"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    depends_on:
+      db:
+        condition: service_healthy
+      node:
+        condition: service_started
+
+  db:
+    image: mariadb:11
+    env_file:
+      - .env
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: true
+      MARIADB_USER: ${DB_USERNAME}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_DATABASE: ${DB_DATABASE}
+    ports:
+      - 3306:3306
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  node:
+    image: node:lts-alpine
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev"
+
+  worker:
+    build:
+      context: docker/php
+    env_file:
+      - .env
+    volumes:
+      - .:/var/www/html
+      - ./docker/secure:/var/lightschool/secure
+      - laravel_vendor:/var/www/html/vendor
+    working_dir: /var/www/html
+    command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
+    depends_on:
+      php:
+        condition: service_healthy
+
+  scheduler:
+    build:
+      context: docker/php
+    env_file:
+      - .env
+    volumes:
+      - .:/var/www/html
+      - ./docker/secure:/var/lightschool/secure
+      - laravel_vendor:/var/www/html/vendor
+    working_dir: /var/www/html
+    command: sh -c "while true; do php artisan schedule:run --no-interaction; sleep 60; done"
+    depends_on:
+      php:
+        condition: service_healthy
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - 8025:8025
+
+volumes:
+  db_data:
+  laravel_vendor:

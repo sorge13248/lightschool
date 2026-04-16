@@ -1,0 +1,39 @@
+// =============================================================================
+// Accent palette
+// =============================================================================
+
+$accent-start:   #1e6bc9;   // gradient left / shadow
+$accent-end:     #237eec;   // gradient right
+$accent-flat:    #1e6ad3;   // flat accent (links, titles, welcome bg)
+$accent-hover:   #2e6bd6;   // button / input hover
+$accent-dark:    #1d50a0;   // titlebar control hover
+$link-color:     #1e90ff;   // default link color
+$disabled-color: #a9d1ff;   // disabled button
+
+// =============================================================================
+// Mixins
+// =============================================================================
+
+@mixin accent-gradient($direction: to right) {
+    background-image: linear-gradient($direction, $accent-start, $accent-end);
+}
+
+@mixin accent-overlay-gradient($opacity: 0.9, $direction: to right) {
+    background-image: linear-gradient(
+        $direction,
+        rgba(30, 107, 201, $opacity),
+        rgba(35, 126, 236, $opacity)
+    );
+}
+
+@mixin accent-shadow($spread: "0 0 37px -8px") {
+    box-shadow: #{$spread} $accent-start;
+}
+
+@mixin paper-shadow {
+    box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+}
+
+@mixin transition($duration: 0.2s) {
+    transition: $duration ease-in-out;
+}

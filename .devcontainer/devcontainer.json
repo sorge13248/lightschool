@@ -1,0 +1,59 @@
+{
+  "name": "Lightschool",
+  "dockerComposeFile": ["../docker-compose.yml"],
+  "service": "php",
+  "workspaceFolder": "/var/www/html",
+  "overrideCommand": false,
+
+  "remoteUser": "root",
+
+  "postCreateCommand": "apk add --no-cache git",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "xdebug.php-debug",
+        "onecentlin.laravel-blade",
+        "amiralizadeh9480.laravel-extra-intellisense",
+        "shufo.vscode-blade-formatter",
+        "editorconfig.editorconfig",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-mysql",
+        "usernamehw.errorlens",
+        "SanderRonde.phpstan-vscode"
+      ],
+      "settings": {
+        "php.validate.executablePath": "/usr/local/bin/php",
+        "intelephense.environment.phpVersion": "8.5.0",
+        "intelephense.files.exclude": ["**/vendor/{,**}", "**/OLD/{,**}"],
+        "editor.formatOnSave": true,
+        "[php]": {
+          "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+        },
+        "[blade]": {
+          "editor.defaultFormatter": "shufo.vscode-blade-formatter"
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[scss]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "sqltools.connections": [
+          {
+            "name": "Lightschool DB",
+            "driver": "MySQL",
+            "server": "db",
+            "port": 3306,
+            "database": "lightschool",
+            "username": "lightschool",
+            "password": "lightschool"
+          }
+        ]
+      }
+    }
+  }
+}

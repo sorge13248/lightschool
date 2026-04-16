@@ -1,0 +1,34 @@
+A web-based school management platform with a desktop-like OS metaphor. Students and staff get a unified workspace with file management, messaging, diary, timetables, presentations and more — all behind a single login 
+
+
+git init && git checkout -b main && git add . && git commit -S && git remote add origin git@github.com:sorge13248/lightschool.git && git push --force --set-upstream origin main
+
+
+feat: migrate LightSchool to Laravel + Inertia.js + Svelte 5
+Complete rewrite of the frontend and backend layers:
+
+Frontend:
+- Migrate all pages to Svelte 5 (runes mode) via Inertia.js
+- Replace all legacy Fra.js globals (FraWindows, FraForm, FraCookie,
+  FraNotifications, FraContextMenu, FraColorPicker) with Svelte components
+- Drop fra.js bundle entirely; remove fraBuildPlugin from Vite
+- Add Modal, CookieBar, ColorPicker, Notifications, ContextMenuFile,
+  ActionButton, PropertyPanel, LoadingPlaceholder components
+- Add Svelte stores: notifications, themePreview, contextmenu
+- Replace FontAwesome with Phosphor icons
+- Use dynamic imports for all Inertia pages (code splitting)
+- Wire Vite HMR through Docker via laravel-vite-plugin
+- Migrate SCSS: merge fra-windows styles into Modal.svelte, drop dead sheets
+
+Backend:
+- Migrate all controllers to Laravel (PageController, FileManagerController,
+  SettingsController, MessageController, Auth controllers, PasskeyController)
+- Implement hybrid encryption via CryptoService (Defuse enc_v1 + libsodium enc_v2)
+- Add KeyringService for per-user Ed25519 key pairs
+- Add passkey / WebAuthn support (spatie/laravel-passkeys)
+- Add 2FA login flow with TOTP
+- Add ExportUserDataJob, account deletion with grace period
+- Soft-delete files via deleted_at; trash flow
+- Add NormalizeFileUrls, PruneOrphanedUsers, ProcessUserDeletions commands
+- Use database driver for sessions, cache, and queues
+- Replace raw SQL with Eloquent throughout

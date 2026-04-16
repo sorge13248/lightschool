@@ -1,0 +1,26 @@
+# Legacy code (pre-Laravel migration, reference only)
+OLD/
+
+# Dependencies (installed in container)
+vendor/
+node_modules/
+
+# Dev/test artifacts
+.env
+public/build
+*.log
+*.tmp
+storage/logs/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+docker/secure

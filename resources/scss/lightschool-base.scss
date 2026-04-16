@@ -1,0 +1,356 @@
+/*
+ * Francesco Sorge (http://www.francescosorge.com)
+ * Copyright 2018-present Francesco Sorge
+ * Licensed under Apache (http://www.apache.org/licenses/LICENSE-2.0)
+ */
+
+@use "variables" as *;
+
+// === Reset & Base ============================================================
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  color: black;
+  font-family: "Arial", "Tahoma", sans-serif;
+  font-size: 12pt;
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  padding: 5px 2px;
+  margin: 5px 2px;
+}
+
+label {
+  display: inline-block;
+  font-weight: bold;
+  margin: 0;
+}
+
+*[contenteditable="true"] {
+  outline: none;
+}
+
+// === Links ==================================================================
+
+a {
+  color: $link-color;
+  text-decoration: underline;
+  @include transition;
+
+  &:hover,
+  &:focus {
+    color: $accent-flat;
+    outline: none;
+  }
+}
+
+// === Layout Utilities =======================================================
+
+.content {
+  margin: 0 auto;
+  width: calc(100% - 40px);
+  max-width: 800px;
+  padding: 20px;
+  background-color: #fff;
+}
+
+.center-page {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 30px;
+
+  @media (max-width: 768px) {
+    position: static;
+    left: auto;
+    top: auto;
+    transform: none;
+  }
+}
+
+// === Forms ==================================================================
+
+input,
+select,
+textarea {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-block;
+  padding: 10px 15px;
+  margin: 0.5rem;
+  border: 1px solid #d9d9d9;
+  border-radius: 10px;
+  font-size: 11pt;
+  background-color: white;
+  @include transition;
+
+  &:hover,
+  &:focus {
+    outline: none;
+    border: 1px solid #2f83ff;
+  }
+
+  &:focus {
+    border: 1px solid $accent-hover;
+    box-shadow: 0 5px 37px -8px $accent-start;
+  }
+}
+
+// Prevent iOS auto-zoom on focus
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  select,
+  textarea,
+  input {
+    font-size: 16px;
+  }
+}
+
+// === Buttons ================================================================
+
+input[type="submit"],
+.button {
+  display: inline-block;
+  margin: 0.5rem;
+  @include accent-gradient;
+  border: none;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  font-size: 1em;
+  @include transition;
+
+  &:hover,
+  &:focus {
+    background-color: $accent-hover;
+    border: none;
+    color: white;
+    outline: none;
+    text-decoration: none;
+    box-shadow: 0 5px 10px $accent-start;
+  }
+
+  &[disabled] {
+    background-image: none;
+    background-color: $disabled-color;
+  }
+
+  &.small {
+    padding: 5px 10px;
+  }
+
+  &.red {
+    background-color: red;
+    background-image: none;
+    border: none;
+
+    &:hover,
+    &:focus {
+      background-color: #d20000;
+    }
+  }
+
+  &.green {
+    background-color: green;
+    background-image: none;
+    border: none;
+
+    &:hover,
+    &:focus {
+      background-color: #007900;
+    }
+  }
+}
+
+// === Checkboxes & Radios ====================================================
+
+input[type="radio"],
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  float: left;
+  border: 0;
+
+  &:checked {
+    background-color: green;
+  }
+}
+
+// === List Items =============================================================
+
+.list {
+  padding: 10px;
+  text-decoration: none;
+  margin: 5px 0;
+  cursor: pointer;
+  color: black;
+  transition: 0.1s ease-in-out;
+  border-radius: 10px;
+
+  &:hover,
+  &:focus,
+  &.selected {
+    @include accent-gradient;
+    color: #fff !important;
+    text-decoration: none;
+    @include accent-shadow("0 0 37px -8px");
+  }
+
+  &.no-transition {
+    transition: none;
+  }
+}
+
+// === Profile Picture ========================================================
+
+.profile-picture {
+  width: 64px;
+  float: left;
+  margin: 10px 20px 10px 10px;
+  border-radius: 50%;
+  @include accent-shadow("0 0 37px -8px");
+}
+
+// === Tabs ===================================================================
+
+.nav-tabs {
+  a {
+    text-decoration: none;
+    margin-right: 10px;
+
+    &:focus {
+      @include accent-gradient;
+      color: #fff !important;
+      border: 1px solid #007bff;
+    }
+
+    &:focus.active {
+      background-color: #007bff;
+      color: #000 !important;
+      border: 1px solid #007bff;
+
+      &:focus {
+        color: #fff !important;
+      }
+    }
+  }
+}
+
+.tab-content > .tab-pane {
+  border: 1px solid #dee2e6;
+  border-top: 0;
+  padding: 20px;
+  border-radius: 0 0 0.25rem 0.25rem;
+}
+
+// === Utility Classes ========================================================
+
+.display-none {
+  display: none;
+}
+
+.ellipsis,
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-inline {
+  display: inline-block;
+  width: 100%;
+  max-width: 200px;
+}
+
+// === Responsive Helpers =====================================================
+
+.mobile,
+.mobile-block,
+.mobile-br,
+.mobile-md,
+.mobile-block-md,
+.mobile-br-md {
+  display: none !important;
+}
+
+.pc {
+  display: inline-block !important;
+}
+
+@media (max-width: 576px) {
+  .pc,
+  .pc.float-right {
+    display: none !important;
+  }
+
+  .mobile {
+    display: inline-block !important;
+  }
+
+  .mobile-block,
+  .mobile-br {
+    display: block !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .pc-md,
+  .pc-md.float-right {
+    display: none !important;
+  }
+
+  .mobile-md {
+    display: inline-block !important;
+  }
+
+  .mobile-block-md,
+  .mobile-br-md {
+    display: block !important;
+  }
+}
+
+// === Print ==================================================================
+
+@media print {
+  .no-print,
+  .no-print * {
+    display: none !important;
+  }
+}
+
+.color-picker-root {
+  display: inline-flex;
+
+  > * {
+    margin: 0;
+  }
+
+  [data-fra-color-picker] {
+    width: 3rem !important;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 0;
+  }
+
+  :not([data-fra-color-picker]) {
+    width: auto !important;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}

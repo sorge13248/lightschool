@@ -1,0 +1,87 @@
+name: lightschool-tests
+
+services:
+
+  db:
+    image: mariadb:11
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: "true"
+      MARIADB_USER: lightschool
+      MARIADB_PASSWORD: lightschool
+      MARIADB_DATABASE: lightschool
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 15s
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  mailpit:
+    image: axllent/mailpit:latest
+
+  php:
+    build:
+      context: docker/php
+      cache_from:
+        - type=local,src=/tmp/.buildx-cache
+      cache_to:
+        - type=local,dest=/tmp/.buildx-cache,mode=max
+    env_file: .env.test
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+      - secure:/var/lightschool/secure
+      - vendor:/var/www/html/vendor
+    command: >
+      sh -c "
+        composer install --no-interaction --prefer-dist --quiet &&
+        mkdir -p storage/logs storage/framework/cache/data storage/framework/sessions storage/framework/views storage/app/uploads &&
+        chmod -R 777 storage bootstrap/cache &&
+        mkdir -p /var/lightschool/secure/upload &&
+        chmod -R 775 /var/lightschool/secure &&
+        php artisan config:clear &&
+        php artisan migrate:fresh --force --seed &&
+        exec php-fpm
+      "
+    healthcheck:
+      test: ["CMD", "php-fpm", "-t"]
+      start_period: 60s
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    depends_on:
+      db:
+        condition: service_healthy
+
+  apache:
+    build:
+      context: docker/apache
+    volumes:
+      - .:/var/www/html:ro
+    depends_on:
+      php:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost/ > /dev/null || exit 1"]
+      start_period: 10s
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  tests:
+    build:
+      context: docker/tests
+    depends_on:
+      apache:
+        condition: service_healthy
+    environment:
+      APP_URL: "http://apache:80"
+      MAILPIT_API: "http://mailpit:8025"
+    volumes:
+      - .:/app
+      - vendor:/app/vendor
+    working_dir: /app
+
+volumes:
+  secure:
+  vendor:
