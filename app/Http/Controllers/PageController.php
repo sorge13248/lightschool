@@ -377,7 +377,7 @@ class PageController extends Controller
                 ]
                 : null,
             'downloadRoute' => url('/my/export/download/__TOKEN__'),
-            'requestRoute'  => url('/api/data-export/request'),
+            'requestRoute'  => route('export.request'),
         ]);
     }
 
