@@ -8,20 +8,20 @@ import * as sass from 'sass';
 
 function scssBuildPlugin(): Plugin {
     const scssDir = resolve(__dirname, 'resources/scss');
-    const cssDir  = resolve(__dirname, 'public/css');
+    const cssDir = resolve(__dirname, 'public/css');
     let isServe = false;
 
     const entries = [
         { in: 'lightschool-base.scss', out: 'lightschool-base.css' },
-        { in: 'lightschool.scss',      out: 'lightschool.css'      },
-        { in: 'lightschool-my.scss',   out: 'lightschool-my.css'   },
-        { in: 'fra-notifications.scss',out: 'fra-notifications.css'},
+        { in: 'lightschool.scss', out: 'lightschool.css' },
+        { in: 'lightschool-my.scss', out: 'lightschool-my.css' },
+        { in: 'fra-notifications.scss', out: 'fra-notifications.css' },
         { in: 'fra-context-menu.scss', out: 'fra-context-menu.css' },
-        { in: 'menu.scss',             out: 'menu.css'             },
-        { in: 'theme/dark.scss',       out: 'theme/dark.css'       },
+        { in: 'menu.scss', out: 'menu.css' },
+        { in: 'theme/dark.scss', out: 'theme/dark.css' },
     ].map(e => ({
-        in:  resolve(scssDir, e.in),
-        out: resolve(cssDir,  e.out),
+        in: resolve(scssDir, e.in),
+        out: resolve(cssDir, e.out),
     }));
 
     const compileAll = (minify: boolean) => {
@@ -67,6 +67,9 @@ export default defineConfig({
         svelte(),
         scssBuildPlugin(),
     ],
+    optimizeDeps: {
+        exclude: ['phosphor-svelte']
+    },
     publicDir: false,
     build: {
         outDir: 'public/build',
